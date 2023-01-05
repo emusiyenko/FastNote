@@ -32,7 +32,16 @@ def confirm_sign_up(username: str, confirmation_code: str):
                            )
 
 
-def initiate_auth(user_name: str, password: str): pass
+def initiate_auth(username: str, password: str):
+    response = client.initiate_auth(AuthFlow='USER_PASSWORD_AUTH',
+                                    ClientId=settings.cognito_client_id,
+                                    AuthParameters={
+                                        'USERNAME': username,
+                                        'PASSWORD': password,
+                                        'SECRET_HASH': _generate_secret_hash(username)
+                                    })
+    result = response['AuthenticationResult']
+    return result
 
 
 def _generate_secret_hash(username):

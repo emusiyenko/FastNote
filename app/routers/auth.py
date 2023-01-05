@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from ..utils import cognito_service
-from ..schemas import UserCredentials, UserSignUpCredentials
+from ..schemas import UserCredentials, UserSignUpCredentials, UserToken
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
@@ -24,6 +24,7 @@ async def confirm_sign_up(username: str, confirmation_code: str):
 @router.post('/sign_in')
 async def sign_in(user: UserCredentials):
     try:
-        cognito_service.initiate_auth(user.username, user.password)
-    except Exception:
-        raise HTTPException(status_code=500, detail='Error creating account in Cognito')
+        auth_result = cognito_service.initiate_auth(user.username, user.password)
+        return auth_result
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail=repr(exc))

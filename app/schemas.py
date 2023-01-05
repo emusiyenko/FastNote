@@ -8,3 +8,8 @@ class UserCredentials(BaseModel):
 
 class UserSignUpCredentials(UserCredentials):
     email: str
+
+
+class UserToken(BaseModel):
+    access_token: str
+    expiration_date: str
