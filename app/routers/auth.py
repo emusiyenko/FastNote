@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from ..utils import cognito_service
-from ..schemas import UserCredentials, UserSignUpCredentials, UserToken
+from ..schemas import UserCredentials, UserSignUpCredentials
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
@@ -9,6 +9,7 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 async def sign_up(user: UserSignUpCredentials):
     try:
         cognito_service.sign_up(user.username, user.password, user.email)
+        cognito_service.add_user_to_default_group(user.username)
     except Exception as exc:
         raise HTTPException(status_code=401, detail=repr(exc))
 

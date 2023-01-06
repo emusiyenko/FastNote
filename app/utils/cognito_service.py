@@ -24,6 +24,12 @@ def sign_up(username: str, password: str, email: str):
                    )
 
 
+def add_user_to_default_group(username: str):
+    client.admin_add_user_to_group(UserPoolId=settings.cognito_user_pool_id,
+                                   Username=username,
+                                   GroupName=settings.cognito_regular_user_group_name)
+
+
 def confirm_sign_up(username: str, confirmation_code: str):
     client.confirm_sign_up(ClientId=settings.cognito_client_id,
                            Username=username,
