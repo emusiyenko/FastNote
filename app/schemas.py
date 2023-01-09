@@ -13,3 +13,8 @@ class UserSignUpCredentials(UserCredentials):
 class UserToken(BaseModel):
     access_token: str
     expiration_date: str
+
+
+class Note(BaseModel):
+    title: str
+    text: str

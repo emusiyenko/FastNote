@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..utils import cognito_service
 from ..schemas import UserCredentials, UserSignUpCredentials
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
@@ -23,7 +24,7 @@ async def confirm_sign_up(username: str, confirmation_code: str):
 
 
 @router.post('/sign_in')
-async def sign_in(user: UserCredentials):
+async def sign_in(user: OAuth2PasswordRequestForm = Depends()):
     try:
         auth_result = cognito_service.initiate_auth(user.username, user.password)
         return auth_result
