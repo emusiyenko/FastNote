@@ -1,7 +1,8 @@
 import boto3
+from ..schemas import AWSIdentity
 
 
-def create_note(user_id: str, title: str, text: str, credentials: dict):
+def create_note(identity: AWSIdentity, title: str, text: str):
     client = boto3.client('dynamodb')
 
 
