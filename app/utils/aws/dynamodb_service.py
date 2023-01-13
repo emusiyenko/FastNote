@@ -1,5 +1,5 @@
 import boto3
-from ..schemas import AWSIdentity
+from app.schemas import AWSIdentity
 
 
 def create_note(identity: AWSIdentity, title: str, text: str):

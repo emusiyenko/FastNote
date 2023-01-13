@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..schemas import Note
-from ..utils import dynamodb_service
+from ..utils.aws import dynamodb_service
 from ..dependencies import aws_identity
 
 router = APIRouter(prefix='/notes', tags=['notes'])
