@@ -22,6 +22,10 @@ class Note(BaseModel):
     text: str
 
 
+class StoredNote(Note):
+    note_id: str
+
+
 class AWSIdentityCredentials(BaseModel):
     access_key_id: str = Field(alias='AccessKeyId')
     secret_key: str = Field(alias='SecretKey')
@@ -33,3 +37,5 @@ class AWSIdentity(BaseModel):
     identity_id: str = Field(alias='IdentityId')
     cognito_claims: dict = {}
     credentials: AWSIdentityCredentials = Field(alias='Credentials')
+
+
