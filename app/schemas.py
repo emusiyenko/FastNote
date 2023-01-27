@@ -22,6 +22,11 @@ class Note(BaseModel):
     text: str
 
 
+class NoteUpdate(Note):
+    title: str = None
+    text: str = None
+
+
 class StoredNote(Note):
     note_id: str
 
