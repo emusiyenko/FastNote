@@ -1,5 +1,6 @@
 import requests
 import boto3
+import logging
 from typing import Dict, List
 from jose import jwt, jwk
 from jose.utils import base64url_decode
@@ -36,6 +37,7 @@ def get_aws_identity(token: str) -> AWSIdentity:
             identity_client.exceptions.InvalidIdentityPoolConfigurationException,
             identity_client.exceptions.InvalidParameterException
             ) as ex:
+        logging.error(ex)
         raise AWSServicesException(recommended_status_code=500, detail=repr(ex))
 
     try:

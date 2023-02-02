@@ -1,5 +1,6 @@
 import uuid
 import boto3
+import logging
 from botocore import exceptions as botocore_exceptions
 from app.schemas import AWSIdentity, AWSIdentityCredentials
 from boto3.dynamodb import conditions
@@ -82,6 +83,7 @@ def _call_table(table_method, **kwargs):
         if error_dict['Code'] == 'ConditionalCheckFailedException':
             raise error
         else:
+            logging.error(error)
             raise AWSServicesException(recommended_status_code=400, detail=error_dict)
 
 

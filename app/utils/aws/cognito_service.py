@@ -1,4 +1,5 @@
 import boto3
+import logging
 import hmac, hashlib, base64
 from app.settings import Settings
 from .aws_exception import AWSServicesException
@@ -77,6 +78,7 @@ def _call_client(method, **kwargs):
             client.exceptions.InvalidSmsRoleTrustRelationshipException,
             client.exceptions.InvalidEmailRoleAccessPolicyException,
             client.exceptions.CodeDeliveryFailureException) as ex:
+        logging.exception(ex)
         raise AWSServicesException(recommended_status_code=500, detail=repr(ex))
     except client.exceptions.UsernameExistsException:
         raise AWSServicesException(recommended_status_code=400, detail="Username already exists")
