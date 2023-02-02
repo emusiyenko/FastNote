@@ -1,8 +1,10 @@
-import os
 from fastapi import FastAPI
 from .routers import auth, notes
 from mangum import Mangum
-root_path = os.environ.get('API_ROOT_PATH')
+from .settings import Settings
+
+settings = Settings()
+root_path = settings.api_root_path
 
 app = FastAPI(root_path=root_path)
 app.include_router(auth.router)
