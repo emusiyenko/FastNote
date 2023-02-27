@@ -9,4 +9,5 @@ class Settings(BaseSettings):
     cognito_identity_pool_id: str
     aws_region: str
     aws_account_id: str
+    dynamo_db_notes_table: str
     api_root_path: str = None

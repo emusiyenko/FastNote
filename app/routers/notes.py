@@ -1,18 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..schemas import Note, StoredNote, NoteUpdate
-from ..utils.aws import dynamodb_service, aws_exception
+from ..utils.aws import aws_exception
+from ..utils.aws.dynamodb_service import NotesDBService
 from ..dependencies import aws_identity
 
 router = APIRouter(prefix='/notes', tags=['notes'])
+notes_service = NotesDBService()
 
 
 @router.post('/create/', status_code=201)
 async def create_note(note: Note, identity=Depends(aws_identity)) -> StoredNote:
     try:
-        note_id = dynamodb_service.create_note(identity=identity, title=note.title, text=note.text)
-        return StoredNote(title=note.title,
-                          text=note.text,
-                          note_id=note_id)
+        return notes_service.create_note(identity, note)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -20,8 +19,7 @@ async def create_note(note: Note, identity=Depends(aws_identity)) -> StoredNote:
 @router.get('', status_code=200)
 async def get_notes(identity=Depends(aws_identity)) -> [StoredNote]:
     try:
-        notes = dynamodb_service.get_notes(identity=identity)
-        return [StoredNote.parse_obj(note) for note in notes]
+        return notes_service.get_notes(identity)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -29,8 +27,7 @@ async def get_notes(identity=Depends(aws_identity)) -> [StoredNote]:
 @router.get('/{note_id}', status_code=200)
 async def get_note(note_id: str, identity=Depends(aws_identity)) -> StoredNote:
     try:
-        note = dynamodb_service.get_note(identity=identity, note_id=note_id)
-        return StoredNote.parse_obj(note)
+        return notes_service.get_note(identity, note_id)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -38,10 +35,7 @@ async def get_note(note_id: str, identity=Depends(aws_identity)) -> StoredNote:
 @router.put('/{note_id}', status_code=200)
 async def update_note(note_id: str, note: Note, identity=Depends(aws_identity)) -> StoredNote:
     try:
-        dynamodb_service.update_note(identity=identity, note_id=note_id, title=note.title, text=note.text)
-        return StoredNote(title=note.title,
-                          text=note.text,
-                          note_id=note_id)
+        return notes_service.update_note(identity, note_id, note.text, note.title)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -49,9 +43,7 @@ async def update_note(note_id: str, note: Note, identity=Depends(aws_identity)) 
 @router.patch('/{note_id}', status_code=200)
 async def partial_update_note(note_id: str, note: NoteUpdate, identity=Depends(aws_identity)) -> StoredNote:
     try:
-        dynamodb_service.update_note(identity=identity, note_id=note_id, title=note.title, text=note.text)
-        updated_note = dynamodb_service.get_note(identity=identity, note_id=note_id)
-        return StoredNote.parse_obj(updated_note)
+        return notes_service.update_note(identity, note_id, note.text, note.title)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -59,6 +51,6 @@ async def partial_update_note(note_id: str, note: NoteUpdate, identity=Depends(a
 @router.delete('/{note_id}', status_code=204)
 async def delete_note(note_id: str, identity=Depends(aws_identity)):
     try:
-        dynamodb_service.delete_note(identity=identity, note_id=note_id)
+        notes_service.delete_note(identity, note_id)
     except aws_exception.AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
