@@ -1,8 +1,12 @@
-import boto3
+import base64
+import hashlib
+import hmac
 import logging
-import hmac, hashlib, base64
+
+import boto3
+
 from app.settings import Settings
-from .aws_exception import AWSServicesException
+from ..exceptions import AWSServicesException
 
 client = boto3.client('cognito-idp')
 settings = Settings()

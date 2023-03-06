@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from .routers import auth, notes
+from .routers import notes
+from .auth import auth
 from mangum import Mangum
 from .settings import Settings
 

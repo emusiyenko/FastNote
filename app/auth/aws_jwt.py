@@ -3,7 +3,7 @@ import logging
 import cognitojwt
 from app.settings import Settings
 from app.schemas import AWSIdentity
-from .aws_exception import AWSServicesException
+from ..exceptions import AWSServicesException
 
 settings = Settings()
 
