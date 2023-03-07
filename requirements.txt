@@ -10,3 +10,6 @@ mangum==0.17.0
 python-multipart==0.0.5
 cognitojwt==1.4.1
 pynamodb==5.4.1
+httpx==0.23.1
+moto[cognitoidp,cognitoidentity,dynamodb]==4.1.4
+python-dotenv==0.21.0

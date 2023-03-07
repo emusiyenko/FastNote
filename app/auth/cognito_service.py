@@ -8,11 +8,10 @@ import boto3
 from app.settings import Settings
 from ..exceptions import AWSServicesException
 
-client = boto3.client('cognito-idp')
-settings = Settings()
-
 
 def sign_up(username: str, password: str, email: str):
+    client = boto3.client('cognito-idp')
+    settings = Settings()
     _call_client(client.sign_up,
                  ClientId=settings.cognito_client_id,
                  Username=username,
@@ -32,6 +31,8 @@ def sign_up(username: str, password: str, email: str):
 
 
 def add_user_to_default_group(username: str):
+    client = boto3.client('cognito-idp')
+    settings = Settings()
     _call_client(client.admin_add_user_to_group,
                  UserPoolId=settings.cognito_user_pool_id,
                  Username=username,
@@ -39,6 +40,8 @@ def add_user_to_default_group(username: str):
 
 
 def confirm_sign_up(username: str, confirmation_code: str):
+    client = boto3.client('cognito-idp')
+    settings = Settings()
     _call_client(client.confirm_sign_up,
                  ClientId=settings.cognito_client_id,
                  Username=username,
@@ -48,6 +51,8 @@ def confirm_sign_up(username: str, confirmation_code: str):
 
 
 def initiate_auth(username: str, password: str):
+    client = boto3.client('cognito-idp')
+    settings = Settings()
     response = _call_client(client.initiate_auth,
                             AuthFlow='USER_PASSWORD_AUTH',
                             ClientId=settings.cognito_client_id,
@@ -66,6 +71,7 @@ def initiate_auth(username: str, password: str):
 
 
 def _call_client(method, **kwargs):
+    client = boto3.client('cognito-idp')
     try:
         return method(**kwargs)
     except (client.exceptions.ResourceNotFoundException,
@@ -104,6 +110,7 @@ def _call_client(method, **kwargs):
 
 
 def _generate_secret_hash(username):
+    settings = Settings()
     app_client_id = settings.cognito_client_id
     app_client_secret = settings.cognito_client_secret
     message = bytes(username + app_client_id, 'utf-8')
