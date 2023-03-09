@@ -2,11 +2,9 @@ import base64
 import hashlib
 import hmac
 import logging
-
 import boto3
-
 from app.settings import Settings
-from ..exceptions import AWSServicesException
+from app.exceptions import AWSServicesException
 
 
 def sign_up(username: str, password: str, email: str):
