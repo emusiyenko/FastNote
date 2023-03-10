@@ -91,20 +91,20 @@ def _call_client(method, **kwargs):
     except client.exceptions.UsernameExistsException:
         raise AWSServicesException(recommended_status_code=400, detail="Username already exists")
     except client.exceptions.InvalidPasswordException:
-        raise AWSServicesException(recommended_status_code=401, detail="Password is invalid")
+        raise AWSServicesException(recommended_status_code=400, detail="Password is invalid")
     except client.exceptions.CodeMismatchException:
-        raise AWSServicesException(recommended_status_code=401, detail="Provided code doesn't match")
+        raise AWSServicesException(recommended_status_code=400, detail="Provided code doesn't match")
     except client.exceptions.ExpiredCodeException:
-        raise AWSServicesException(recommended_status_code=401, detail="Provided code has expired")
+        raise AWSServicesException(recommended_status_code=400, detail="Provided code has expired")
     except client.exceptions.PasswordResetRequiredException:
-        raise AWSServicesException(recommended_status_code=401, detail="Password reset required")
+        raise AWSServicesException(recommended_status_code=400, detail="Password reset required")
     except client.exceptions.UserNotFoundException:
-        raise AWSServicesException(recommended_status_code=401, detail="User not found")
+        raise AWSServicesException(recommended_status_code=400, detail="User not found")
     except client.exceptions.UserNotConfirmedException:
-        raise AWSServicesException(recommended_status_code=401, detail="User not confirmed")
+        raise AWSServicesException(recommended_status_code=400, detail="User not confirmed")
     except (client.exceptions.NotAuthorizedException,
             client.exceptions.ForbiddenException) as ex:
-        raise AWSServicesException(recommended_status_code=401, detail=repr(ex))
+        raise AWSServicesException(recommended_status_code=401, detail="Not authorized")
 
 
 def _generate_secret_hash(username):
