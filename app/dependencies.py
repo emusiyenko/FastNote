@@ -1,9 +1,9 @@
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
-from .exceptions import AWSServicesException
-from .auth import aws_jwt
-from .settings import Settings
-from .utils.dynamodb_service import NotesDBService
+from app.exceptions import AWSServicesException
+from app.auth import aws_jwt
+from app.settings import Settings
+from app.utils.dynamodb_service import NotesDBService
 settings = Settings()
 
 root_path = settings.api_root_path if settings.api_root_path else ''

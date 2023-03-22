@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from ..schemas import Note, StoredNote, NoteUpdate
-from ..exceptions import AWSServicesException
-from ..dependencies import dynamodb_service
+from app.schemas import Note, StoredNote, NoteUpdate
+from app.exceptions import AWSServicesException
+from app.dependencies import dynamodb_service
 
 router = APIRouter(prefix='/notes', tags=['notes'])
 

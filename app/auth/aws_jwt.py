@@ -3,12 +3,11 @@ import logging
 import cognitojwt
 from app.settings import Settings
 from app.schemas import AWSIdentity
-from ..exceptions import AWSServicesException
-
-settings = Settings()
+from app.exceptions import AWSServicesException
 
 
 def get_aws_identity(token: str) -> AWSIdentity:
+    settings = Settings()
     identity_client = boto3.client('cognito-identity')
     user_pool_full_identifier = f'cognito-idp.{settings.aws_region}.amazonaws.com/{settings.cognito_user_pool_id}'
     try:
