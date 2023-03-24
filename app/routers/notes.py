@@ -6,7 +6,7 @@ from app.dependencies import dynamodb_service
 router = APIRouter(prefix='/notes', tags=['notes'])
 
 
-@router.post('/create/', status_code=201)
+@router.post('', status_code=201)
 async def create_note(note: Note, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
         return notes_service.create_note(note)
@@ -33,7 +33,7 @@ async def get_note(note_id: str, notes_service=Depends(dynamodb_service)) -> Sto
 @router.put('/{note_id}', status_code=200)
 async def update_note(note_id: str, note: Note, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
-        return notes_service.update_note(note_id, note.text, note.title)
+        return notes_service.update_note(note_id, note.title, note.text)
     except AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
@@ -41,7 +41,7 @@ async def update_note(note_id: str, note: Note, notes_service=Depends(dynamodb_s
 @router.patch('/{note_id}', status_code=200)
 async def partial_update_note(note_id: str, note: NoteUpdate, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
-        return notes_service.update_note(note_id, note.text, note.title)
+        return notes_service.update_note(note_id, note.title, note.text)
     except AWSServicesException as exc:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 

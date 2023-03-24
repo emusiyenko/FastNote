@@ -56,8 +56,9 @@ class NotesDBService:
         return self._get_stored_note_from_dynamodb_note(note)
 
     def _get_dynamodb_note(self, note_id: str):
-        note = DynamoDBNote.get(hash_key=self.identity.identity_id, range_key=f'note_{note_id}')
-        if not note:
+        try:
+            note = DynamoDBNote.get(hash_key=self.identity.identity_id, range_key=f'note_{note_id}')
+        except DynamoDBNote.DoesNotExist:
             raise AWSServicesException(recommended_status_code=404, detail=f'Note with id {note_id} not found')
         return note
 
