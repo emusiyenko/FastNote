@@ -2,11 +2,12 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.schemas import Note, StoredNote, NoteUpdate
 from app.exceptions import AWSServicesException
 from app.dependencies import dynamodb_service
+from fastapi import status
 
-router = APIRouter(prefix='/notes', tags=['notes'])
+router = APIRouter(prefix='/v1/notes', tags=['notes'])
 
 
-@router.post('', status_code=201)
+@router.post('', status_code=status.HTTP_201_CREATED)
 async def create_note(note: Note, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
         return notes_service.create_note(note)
@@ -14,7 +15,7 @@ async def create_note(note: Note, notes_service=Depends(dynamodb_service)) -> St
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
 
-@router.get('', status_code=200)
+@router.get('', status_code=status.HTTP_200_OK)
 async def get_notes(notes_service=Depends(dynamodb_service)) -> [StoredNote]:
     try:
         return notes_service.get_notes()
@@ -22,7 +23,7 @@ async def get_notes(notes_service=Depends(dynamodb_service)) -> [StoredNote]:
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
 
-@router.get('/{note_id}', status_code=200)
+@router.get('/{note_id}', status_code=status.HTTP_200_OK)
 async def get_note(note_id: str, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
         return notes_service.get_note(note_id)
@@ -30,7 +31,7 @@ async def get_note(note_id: str, notes_service=Depends(dynamodb_service)) -> Sto
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
 
-@router.put('/{note_id}', status_code=200)
+@router.put('/{note_id}', status_code=status.HTTP_200_OK)
 async def update_note(note_id: str, note: Note, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
         return notes_service.update_note(note_id, note.title, note.text)
@@ -38,7 +39,7 @@ async def update_note(note_id: str, note: Note, notes_service=Depends(dynamodb_s
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
 
-@router.patch('/{note_id}', status_code=200)
+@router.patch('/{note_id}', status_code=status.HTTP_200_OK)
 async def partial_update_note(note_id: str, note: NoteUpdate, notes_service=Depends(dynamodb_service)) -> StoredNote:
     try:
         return notes_service.update_note(note_id, note.title, note.text)
@@ -46,7 +47,7 @@ async def partial_update_note(note_id: str, note: NoteUpdate, notes_service=Depe
         raise HTTPException(status_code=exc.recommended_status_code, detail=exc.detail)
 
 
-@router.delete('/{note_id}', status_code=204)
+@router.delete('/{note_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_note(note_id: str, notes_service=Depends(dynamodb_service)):
     try:
         notes_service.delete_note(note_id)

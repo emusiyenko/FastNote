@@ -4,6 +4,7 @@ import cognitojwt
 from app.settings import Settings
 from app.schemas import AWSIdentity
 from app.exceptions import AWSServicesException
+from fastapi import status
 
 
 def get_aws_identity(token: str) -> AWSIdentity:
@@ -21,7 +22,8 @@ def get_aws_identity(token: str) -> AWSIdentity:
             user_pool_full_identifier: token
         })
     except identity_client.exceptions.NotAuthorizedException:
-        raise AWSServicesException(recommended_status_code=401, detail="AWS exception: not authorized")
+        raise AWSServicesException(recommended_status_code=status.HTTP_401_UNAUTHORIZED,
+                                   detail="AWS exception: not authorized")
     except (identity_client.exceptions.ResourceNotFoundException,
             identity_client.exceptions.ResourceConflictException,
             identity_client.exceptions.TooManyRequestsException,
@@ -32,7 +34,7 @@ def get_aws_identity(token: str) -> AWSIdentity:
             identity_client.exceptions.InvalidParameterException
             ) as ex:
         logging.error(ex)
-        raise AWSServicesException(recommended_status_code=500, detail=repr(ex))
+        raise AWSServicesException(recommended_status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=repr(ex))
 
     try:
         claims = cognitojwt.decode(token, settings.aws_region, settings.cognito_user_pool_id,
@@ -40,7 +42,7 @@ def get_aws_identity(token: str) -> AWSIdentity:
         identity_object = AWSIdentity.parse_obj(credentials)
         identity_object.cognito_claims = claims
     except Exception as ex:
-        raise AWSServicesException(recommended_status_code=500, detail=repr(ex))
+        raise AWSServicesException(recommended_status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=repr(ex))
 
     return identity_object
 

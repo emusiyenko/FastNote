@@ -5,6 +5,7 @@ from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute
 from app.settings import Settings
 from app.schemas import Note, StoredNote
+from fastapi import status
 
 settings = Settings()
 
@@ -59,7 +60,8 @@ class NotesDBService:
         try:
             note = DynamoDBNote.get(hash_key=self.identity.identity_id, range_key=f'note_{note_id}')
         except DynamoDBNote.DoesNotExist:
-            raise AWSServicesException(recommended_status_code=404, detail=f'Note with id {note_id} not found')
+            raise AWSServicesException(recommended_status_code=status.HTTP_404_NOT_FOUND,
+                                       detail=f'Note with id {note_id} not found')
         return note
 
     def _get_stored_note_from_dynamodb_note(self, note):

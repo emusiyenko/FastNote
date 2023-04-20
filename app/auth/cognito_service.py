@@ -5,6 +5,7 @@ import logging
 import boto3
 from app.settings import Settings
 from app.exceptions import AWSServicesException
+from fastapi import status
 
 
 def sign_up(username: str, password: str, email: str):
@@ -87,24 +88,28 @@ def _call_client(method, **kwargs):
             client.exceptions.InvalidEmailRoleAccessPolicyException,
             client.exceptions.CodeDeliveryFailureException) as ex:
         logging.exception(ex)
-        raise AWSServicesException(recommended_status_code=500, detail=repr(ex))
+        raise AWSServicesException(recommended_status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=repr(ex))
     except client.exceptions.UsernameExistsException:
-        raise AWSServicesException(recommended_status_code=400, detail="Username already exists")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST,
+                                   detail="Username already exists")
     except client.exceptions.InvalidPasswordException:
-        raise AWSServicesException(recommended_status_code=400, detail="Password is invalid")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST, detail="Password is invalid")
     except client.exceptions.CodeMismatchException:
-        raise AWSServicesException(recommended_status_code=400, detail="Provided code doesn't match")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST,
+                                   detail="Provided code doesn't match")
     except client.exceptions.ExpiredCodeException:
-        raise AWSServicesException(recommended_status_code=400, detail="Provided code has expired")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST,
+                                   detail="Provided code has expired")
     except client.exceptions.PasswordResetRequiredException:
-        raise AWSServicesException(recommended_status_code=400, detail="Password reset required")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST,
+                                   detail="Password reset required")
     except client.exceptions.UserNotFoundException:
-        raise AWSServicesException(recommended_status_code=400, detail="User not found")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
     except client.exceptions.UserNotConfirmedException:
-        raise AWSServicesException(recommended_status_code=400, detail="User not confirmed")
+        raise AWSServicesException(recommended_status_code=status.HTTP_400_BAD_REQUEST, detail="User not confirmed")
     except (client.exceptions.NotAuthorizedException,
             client.exceptions.ForbiddenException) as ex:
-        raise AWSServicesException(recommended_status_code=401, detail="Not authorized")
+        raise AWSServicesException(recommended_status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authorized")
 
 
 def _generate_secret_hash(username):

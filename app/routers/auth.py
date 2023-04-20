@@ -3,11 +3,12 @@ from app.exceptions import AWSServicesException
 from app.auth import cognito_service
 from app.schemas import UserSignUpCredentials
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import status
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
 
-@router.post('/sign_up', status_code=201)
+@router.post('/sign_up', status_code=status.HTTP_201_CREATED)
 async def sign_up(user: UserSignUpCredentials):
     try:
         cognito_service.sign_up(user.username, user.password, user.email)
