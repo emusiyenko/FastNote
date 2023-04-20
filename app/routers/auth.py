@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.exceptions import AWSServicesException
-from app.auth import cognito_service
+from app.utils.auth import cognito_service
 from app.schemas import UserSignUpCredentials
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import status

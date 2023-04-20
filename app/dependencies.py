@@ -1,7 +1,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
 from app.exceptions import AWSServicesException
-from app.auth import aws_jwt
+from app.utils.auth import aws_jwt
 from app.settings import Settings
 from app.utils.dynamodb_service import NotesDBService
 settings = Settings()

@@ -67,7 +67,7 @@ def cognito_idp_with_confirmed_user(cognito_idp_with_new_user):
 
 @pytest.fixture(scope="function")
 def logged_in_client(client, cognito_idp_with_confirmed_user):
-    from app.auth.aws_jwt import get_aws_identity
+    from app.utils.auth.aws_jwt import get_aws_identity
     cognito_service, user_pool_id, username, password = cognito_idp_with_confirmed_user
     response = client.post(f'/auth/sign_in', data={"username": username, "password": password})
     assert response.status_code == 200
