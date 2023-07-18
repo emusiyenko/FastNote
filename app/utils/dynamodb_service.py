@@ -18,7 +18,7 @@ class DynamoDBNote(Model):
 
     class Meta:
         table_name = settings.dynamo_db_notes_table
-        region = settings.aws_region
+        region = settings.aws_default_region
 
 
 class NotesDBService:

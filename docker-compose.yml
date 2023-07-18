@@ -1,0 +1,55 @@
+secrets:
+  aws-account-id:
+    environment: "AWS_ACCOUNT_ID"
+  cognito-client-id:
+    environment: "COGNITO_CLIENT_ID"
+  cognito-client-secret:
+    environment: "COGNITO_CLIENT_SECRET"
+  cognito-identity-pool-id:
+    environment: "COGNITO_IDENTITY_POOL_ID"
+  aws-access-key-id:
+    environment: "AWS_ACCESS_KEY_ID"
+  aws-secret-access-key:
+    environment: "AWS_SECRET_ACCESS_KEY"
+  cognito-regular-user-group-name:
+    environment: "COGNITO_REGULAR_USER_GROUP_NAME"
+  cognito-user-pool-id:
+    environment: "COGNITO_USER_POOL_ID"
+  dynamo-db-notes-table:
+    environment: "DYNAMO_DB_NOTES_TABLE"
+  aws-default-region:
+    environment: "AWS_DEFAULT_REGION"
+
+services:
+  backend:
+    image: fastnote
+    ports:
+      - "8000:8000"
+    networks:
+      - local
+    environment:
+      AWS_ACCOUNT_ID: aws-account-id
+      COGNITO_CLIENT_ID: cognito-client-id
+      COGNITO_CLIENT_SECRET: cognito-client-secret
+      COGNITO_IDENTITY_POOL_ID: cognito-identity-pool-id
+      COGNITO_REGULAR_USER_GROUP_NAME: cognito-regular-user-group-name
+      COGNITO_USER_POOL_ID: cognito-user-pool-id
+      DYNAMO_DB_NOTES_TABLE: dynamo-db-notes-table
+      AWS_ACCESS_KEY_ID: aws-access-key-id
+      AWS_SECRET_ACCESS_KEY: aws-secret-access-key
+      AWS_DEFAULT_REGION: aws-default-region
+    secrets:
+      - aws-account-id
+      - cognito-client-id
+      - cognito-client-secret
+      - cognito-identity-pool-id
+      - aws-access-key-id
+      - aws-secret-access-key
+      - cognito-regular-user-group-name
+      - cognito-user-pool-id
+      - dynamo-db-notes-table
+      - aws-default-region
+
+networks:
+  local:
+    driver: bridge

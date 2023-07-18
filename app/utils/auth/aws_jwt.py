@@ -10,7 +10,7 @@ from fastapi import status
 def get_aws_identity(token: str) -> AWSIdentity:
     settings = Settings()
     identity_client = boto3.client('cognito-identity')
-    user_pool_full_identifier = f'cognito-idp.{settings.aws_region}.amazonaws.com/{settings.cognito_user_pool_id}'
+    user_pool_full_identifier = f'cognito-idp.{settings.aws_default_region}.amazonaws.com/{settings.cognito_user_pool_id}'
     try:
         id_response = identity_client.get_id(AccountId=settings.aws_account_id,
                                              IdentityPoolId=settings.cognito_identity_pool_id,
@@ -37,7 +37,7 @@ def get_aws_identity(token: str) -> AWSIdentity:
         raise AWSServicesException(recommended_status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=repr(ex))
 
     try:
-        claims = cognitojwt.decode(token, settings.aws_region, settings.cognito_user_pool_id,
+        claims = cognitojwt.decode(token, settings.aws_default_region, settings.cognito_user_pool_id,
                                    settings.cognito_client_id, testmode=False)
         identity_object = AWSIdentity.parse_obj(credentials)
         identity_object.cognito_claims = claims

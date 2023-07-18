@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     cognito_user_pool_id: str
     cognito_regular_user_group_name: str
     cognito_identity_pool_id: str
-    aws_region: str
+    aws_default_region: str
     aws_account_id: str
     dynamo_db_notes_table: str
     api_root_path: str = None
